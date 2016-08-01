@@ -146,12 +146,22 @@ Match User git
 ' >> /etc/ssh/sshd_config
 ```
 
-## Start daemon
+## (Auto-)Start daemon
 ```
-$  mkdir -p /var/tmp/phd
+$ echo '
+#!/bin/sh -e
+
+# Phabricator
+cd /opt/phabricator
+exec sudo -En -u phabricator -- ./bin/phd start
+
+exit 0
+' >> /etc/rc.local
+
+$ mkdir -p /var/tmp/phd
 $ chown phabricator /var/tmp/phd
 $ chgrp phabricator /var/tmp/phd
 
 $ cd /opt/phabricator
-$ exec sudo -En -u phabricator -- ./bin/phd restart
+$ exec sudo -En -u phabricator -- ./bin/phd start
 ```
