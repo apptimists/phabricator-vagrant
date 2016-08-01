@@ -56,6 +56,7 @@ $ ./bin/config set phabricator.base-uri 'http://phabricator.apptimists.com/'
 $ ./bin/config set phd.user phabricator
 $ ./bin/config set environment.append-paths '["/usr/lib/git-core"]'
 $ ./bin/config set diffusion.ssh-user git
+$ ./bin/config set security.alternate-file-domain	'http://cdn.apptimists.com/'
 $ ./bin/config set pygments.enabled true
 $ ./bin/config set policy.allow-public true
 $ ./bin/config set diffusion.allow-http-auth false
@@ -86,6 +87,7 @@ $ ./bin/config set remarkup.enable-embedded-youtube true
 $ echo '
 <VirtualHost *:80>
         ServerName phabricator.apptimists.com
+        ServerAlias cdn.apptimists.com
         ServerAdmin webmaster@example.com
         DocumentRoot /opt/phabricator/webroot
         RewriteEngine on

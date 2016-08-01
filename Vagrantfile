@@ -17,6 +17,7 @@ Vagrant.configure(2) do |config|
   config.ssh.forward_agent = true
 
   config.vm.hostname = "phabricator.apptimists.com"
+  config.hostsupdater.aliases = ["cdn.apptimists.com"]
 
   # Private Network
   config.vm.network :private_network, ip: "192.168.50.12"
