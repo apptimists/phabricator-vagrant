@@ -179,6 +179,7 @@ poll mail.apptimists.com protocol pop3:
         username "phabricator" password "pass@word1" is "phabricator" here
         mda "/opt/phabricator/scripts/mail/mail_handler.php"
 ' >> /etc/fetchmailrc
+service fetchmail restart
 ```
 
 ## (Auto-)Start daemon
