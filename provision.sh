@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# Fix: "default: stdin: is not a tty" error
+# see: https://github.com/mitchellh/vagrant/issues/1673
+sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
+
 # Environment variables
 MYSQL_PASSWORD=${MYSQL_PASSWORD}
 SERVER_NAME=${SERVER_NAME:-'phabricator.apptimists.com'}
