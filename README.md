@@ -87,7 +87,7 @@ $ echo '
 <VirtualHost *:80>
         ServerName phabricator.apptimists.com
         ServerAlias cdn.apptimists.com
-        ServerAdmin webmaster@example.com
+        ServerAdmin phabricator@apptimists.com
         DocumentRoot /opt/phabricator/webroot
         RewriteEngine on
         RewriteRule ^/rsrc/(.*)     -                       [L,QSA]
