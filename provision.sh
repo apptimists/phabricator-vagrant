@@ -122,6 +122,37 @@ Match User git
   PasswordAuthentication no
 ' >> /etc/ssh/sshd_config
 
+# Configure email notifications
+## Outbound emails
+cd /opt/phabricator
+./bin/config set metamta.default-address 'phabricator@apptimists.com'
+./bin/config set metamta.domain 'apptimists.com'
+./bin/config set metamta.mail-adapter 'PhabricatorMailImplementationPHPMailerAdapter'
+./bin/config set phpmailer.smtp-host 'mail.apptimists.com'
+./bin/config set phpmailer.smtp-user 'phabricator'
+./bin/config set phpmailer.smtp-password 'pass@word1'
+
+## Inbound emails
+cd /opt/phabricator
+./bin/config set metamta.reply-handler-domain 'apptimists.com'
+./bin/config set metamta.single-reply-handler-prefix 'phabricator'
+
+### Install and configure packages
+apt-get -y install fetchmail
+pecl install mailparse-2.1.6
+
+echo 'extension=mailparse.so' >> /etc/php5/mods-available/mailparse.ini
+php5enmod mailparse
+
+sed -i 's/^\(START_DAEMON=\).*$/\1yes/' /etc/default/fetchmail
+
+echo '
+set daemon 30
+poll mail.apptimists.com protocol pop3:
+        username "phabricator" password "pass@word1" is "phabricator" here
+        mda "/opt/phabricator/scripts/mail/mail_handler.php"
+' >> /etc/fetchmailrc
+
 # (Auto-)Start daemon
 echo '
 #!/bin/sh -e
