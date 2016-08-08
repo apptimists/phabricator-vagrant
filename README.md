@@ -58,7 +58,6 @@ $ ./bin/config set environment.append-paths '["/usr/lib/git-core"]'
 $ ./bin/config set diffusion.ssh-user git
 $ ./bin/config set security.alternate-file-domain	'http://cdn.apptimists.com/'
 $ ./bin/config set pygments.enabled true
-$ ./bin/config set policy.allow-public true
 $ ./bin/config set diffusion.allow-http-auth false
 $ ./bin/config set phabricator.show-prototypes true
 $ ./bin/config set differential.require-test-plan-field false
