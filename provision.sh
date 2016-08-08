@@ -1,5 +1,32 @@
 #!/bin/sh
 
+# Environment variables
+MYSQL_PASSWORD=${MYSQL_PASSWORD}
+SERVER_NAME=${SERVER_NAME:-'phabricator.apptimists.com'}
+SERVER_ALIAS=${SERVER_ALIAS:-'cdn.apptimists.com'}
+SERVER_ADMIN=${SERVER_ADMIN:-'phabricator@apptimists.com'}
+MAIL_ADDRESS=${MAIL_ADDRESS:-'phabricator@apptimists.com'}
+MAIL_DOMAIN=${MAIL_DOMAIN:-'apptimists.com'}
+MAIL_REPLY_PREFIX=${MAIL_REPLY_PREFIX:-'phabricator'}
+MAIL_REPLY_DOMAIN=${MAIL_REPLY_DOMAIN:-'apptimists.com'}
+SMTP_HOST=${SMTP_HOST:-'mail.apptimists.com'}
+SMTP_USER=${SMTP_USER:-'phabricator'}
+SMTP_PASSWORD=${SMTP_PASSWORD:-'pass@word1'}
+POP3_HOST=${POP3_HOST:-'mail.apptimists.com'}
+POP3_USER=${POP3_USER:-'phabricator'}
+POP3_PASSWORD=${POP3_PASSWORD:-'pass@word1'}
+
+## Check environment variables
+if [ -z "$MYSQL_PASSWORD" ] || [ "$MYSQL_PASSWORD" = "pass@word1" ]
+then
+  echo '
+  Phabricator installation failed! 😱
+
+  Please update the environment variables in Vagrantfile.
+  ' >> /dev/stderr
+  exit 0
+fi
+
 # Basics
 apt-get -y update
 apt-get -y upgrade
@@ -22,8 +49,8 @@ cd /opt
 
 ## Install packages
 ### Supresses password prompt
-echo mysql-server-5.5 mysql-server/root_password password pass@word1 | debconf-set-selections
-echo mysql-server-5.5 mysql-server/root_password_again password pass@word1 | debconf-set-selections
+echo mysql-server-5.5 mysql-server/root_password password $MYSQL_PASSWORD | debconf-set-selections
+echo mysql-server-5.5 mysql-server/root_password_again password $MYSQL_PASSWORD | debconf-set-selections
 apt-get -y install git mysql-server apache2 dpkg-dev php5 php5-mysql php5-gd php5-dev php5-curl php-apc php5-cli php5-json
 
 ### Clone repositories
@@ -35,12 +62,12 @@ git clone https://github.com/phacility/phabricator.git
 cd /opt/phabricator
 
 ## General settings
-./bin/config set mysql.pass pass@word1
-./bin/config set phabricator.base-uri 'http://phabricator.apptimists.com/'
+./bin/config set mysql.pass $MYSQL_PASSWORD
+./bin/config set phabricator.base-uri 'http://'$SERVER_NAME'/'
 ./bin/config set phd.user phabricator
 ./bin/config set environment.append-paths '["/usr/lib/git-core"]'
 ./bin/config set diffusion.ssh-user git
-./bin/config set security.alternate-file-domain	'http://cdn.apptimists.com/'
+./bin/config set security.alternate-file-domain	'http://'$SERVER_ALIAS'/'
 ./bin/config set pygments.enabled true
 ./bin/config set diffusion.allow-http-auth false
 ./bin/config set phabricator.show-prototypes true
@@ -67,9 +94,9 @@ apt-get -y install mercurial subversion python-pygments sendmail imagemagick
 # Setup webserver
 echo '
 <VirtualHost *:80>
-        ServerName phabricator.apptimists.com
-        ServerAlias cdn.apptimists.com
-        ServerAdmin webmaster@example.com
+        ServerName '$SERVER_NAME'
+        ServerAlias '$SERVER_ALIAS'
+        ServerAdmin '$SERVER_ADMIN'
         DocumentRoot /opt/phabricator/webroot
         RewriteEngine on
         RewriteRule ^/rsrc/(.*)     -                       [L,QSA]
@@ -125,17 +152,17 @@ Match User git
 # Configure email notifications
 ## Outbound emails
 cd /opt/phabricator
-./bin/config set metamta.default-address 'phabricator@apptimists.com'
-./bin/config set metamta.domain 'apptimists.com'
+./bin/config set metamta.default-address $MAIL_ADDRESS
+./bin/config set metamta.domain $MAIL_DOMAIN
 ./bin/config set metamta.mail-adapter 'PhabricatorMailImplementationPHPMailerAdapter'
-./bin/config set phpmailer.smtp-host 'mail.apptimists.com'
-./bin/config set phpmailer.smtp-user 'phabricator'
-./bin/config set phpmailer.smtp-password 'pass@word1'
+./bin/config set phpmailer.smtp-host $SMTP_HOST
+./bin/config set phpmailer.smtp-user $SMTP_USER
+./bin/config set phpmailer.smtp-password $SMTP_PASSWORD
 
 ## Inbound emails
 cd /opt/phabricator
-./bin/config set metamta.reply-handler-domain 'apptimists.com'
-./bin/config set metamta.single-reply-handler-prefix 'phabricator'
+./bin/config set metamta.reply-handler-domain $MAIL_REPLY_DOMAIN
+./bin/config set metamta.single-reply-handler-prefix $MAIL_REPLY_PREFIX
 
 ### Install and configure packages
 apt-get -y install fetchmail
@@ -148,8 +175,8 @@ sed -i 's/^\(START_DAEMON=\).*$/\1yes/' /etc/default/fetchmail
 
 echo '
 set daemon 30
-poll mail.apptimists.com protocol pop3:
-        username "phabricator" password "pass@word1" is "phabricator" here
+poll '$POP3_HOST' protocol pop3:
+        username "'$POP3_USER'" password "'$POP3_PASSWORD'" is "phabricator" here
         mda "/opt/phabricator/scripts/mail/mail_handler.php"
 ' >> /etc/fetchmailrc
 service fetchmail restart
