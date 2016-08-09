@@ -83,8 +83,7 @@ $ ./bin/config set remarkup.enable-embedded-youtube true
 
 ## Setup webserver
 ```
-$ echo '
-<VirtualHost *:80>
+$ echo '<VirtualHost *:80>
         ServerName phabricator.apptimists.com
         ServerAlias cdn.apptimists.com
         ServerAdmin phabricator@apptimists.com
@@ -173,8 +172,7 @@ $ php5enmod mailparse
 #### Configure fetchmail
 ```
 $ sed -i 's/^\(START_DAEMON=\).*$/\1yes/' /etc/default/fetchmail
-$ echo '
-set daemon 30
+$ echo 'set daemon 30
 poll mail.apptimists.com protocol pop3:
         username "phabricator" password "pass@word1" is "phabricator" here
         mda "/opt/phabricator/scripts/mail/mail_handler.php"
@@ -184,15 +182,14 @@ service fetchmail restart
 
 ## (Auto-)Start daemon
 ```
-$ echo '
-#!/bin/sh -e
+$ echo '#!/bin/sh -e
 
 # Phabricator
 cd /opt/phabricator
 exec sudo -En -u phabricator -- ./bin/phd start
 
 exit 0
-' >> /etc/rc.local
+' > /etc/rc.local
 
 $ mkdir -p /var/tmp/phd
 $ chown phabricator /var/tmp/phd
