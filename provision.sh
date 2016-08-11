@@ -1,39 +1,24 @@
 #!/bin/sh
 
-# Fix: "default: stdin: is not a tty" error
-# see: https://github.com/mitchellh/vagrant/issues/1673
-sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile
-
-# Environment variables
-MYSQL_PASSWORD=${MYSQL_PASSWORD}
-SERVER_NAME=${SERVER_NAME:-'phabricator.apptimists.com'}
-SERVER_ALIAS=${SERVER_ALIAS:-'cdn.apptimists.com'}
-SERVER_ADMIN=${SERVER_ADMIN:-'phabricator@apptimists.com'}
-MAIL_ADDRESS=${MAIL_ADDRESS:-'phabricator@apptimists.com'}
-MAIL_DOMAIN=${MAIL_DOMAIN:-'apptimists.com'}
-MAIL_REPLY_PREFIX=${MAIL_REPLY_PREFIX:-'phabricator'}
-MAIL_REPLY_DOMAIN=${MAIL_REPLY_DOMAIN:-'apptimists.com'}
-SMTP_HOST=${SMTP_HOST:-'mail.apptimists.com'}
-SMTP_USER=${SMTP_USER:-'phabricator'}
-SMTP_PASSWORD=${SMTP_PASSWORD:-'pass@word1'}
-POP3_HOST=${POP3_HOST:-'mail.apptimists.com'}
-POP3_USER=${POP3_USER:-'phabricator'}
-POP3_PASSWORD=${POP3_PASSWORD:-'pass@word1'}
-
-## Check environment variables
-if [ -z "$MYSQL_PASSWORD" ] || [ "$MYSQL_PASSWORD" = "pass@word1" ]
-then
-  echo '
-  Phabricator installation failed! 😱
-
-  Please update the environment variables in Vagrantfile.
-  ' >> /dev/stderr
-  exit 0
-fi
+# Arguments
+MYSQL_PASSWORD=${1}
+SERVER_NAME=${2}
+SERVER_ALIAS=${3}
+SERVER_ADMIN=${4}
+MAIL_ADDRESS=${5}
+MAIL_DOMAIN=${6}
+MAIL_REPLY_PREFIX=${7}
+MAIL_REPLY_DOMAIN=${8}
+SMTP_HOST=${9}
+SMTP_USER=${10}
+SMTP_PASSWORD=${11}
+POP3_HOST=${12}
+POP3_USER=${13}
+POP3_PASSWORD=${14}
 
 # Basics
-apt-get -y update
-apt-get -y upgrade
+apt-get -y -q update
+apt-get -y -q upgrade
 
 ## Set users
 adduser phabricator --gecos "" --disabled-password --quiet
@@ -55,7 +40,7 @@ cd /opt
 ### Supresses password prompt
 echo mysql-server-5.5 mysql-server/root_password password $MYSQL_PASSWORD | debconf-set-selections
 echo mysql-server-5.5 mysql-server/root_password_again password $MYSQL_PASSWORD | debconf-set-selections
-apt-get -y install git mysql-server apache2 dpkg-dev php5 php5-mysql php5-gd php5-dev php5-curl php-apc php5-cli php5-json
+apt-get -y -q install git mysql-server apache2 dpkg-dev php5 php5-mysql php5-gd php5-dev php5-curl php-apc php5-cli php5-json
 
 ### Clone repositories
 git clone https://github.com/phacility/libphutil.git
@@ -91,7 +76,7 @@ chgrp -R phabricator /opt/phabricator/repositories
 ./bin/config set repository.default-local-path /opt/phabricator/repositories
 
 ## Nice to have
-apt-get -y install mercurial subversion python-pygments sendmail imagemagick
+apt-get -y -q install mercurial subversion python-pygments sendmail imagemagick
 ./bin/config set files.enable-imagemagick true
 ./bin/config set remarkup.enable-embedded-youtube true
 
@@ -168,7 +153,7 @@ cd /opt/phabricator
 ./bin/config set metamta.single-reply-handler-prefix $MAIL_REPLY_PREFIX
 
 ### Install and configure packages
-apt-get -y install fetchmail
+apt-get -y -q install fetchmail
 pecl install mailparse-2.1.6
 
 echo 'extension=mailparse.so' >> /etc/php5/mods-available/mailparse.ini

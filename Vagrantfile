@@ -16,27 +16,29 @@ Vagrant.configure(2) do |config|
   # SSH Agent Forwarding
   config.ssh.forward_agent = true
 
-  config.vm.hostname = "phabricator.apptimists.com"
-  config.hostsupdater.aliases = ["cdn.apptimists.com"]
+  config.vm.hostname = "phabricator.example.org"
+  config.hostsupdater.aliases = ["cdn.example.org"]
 
   # Private Network
   config.vm.network :private_network, ip: "192.168.50.12"
 
   # Provisioning
-  config.vm.provision :shell, :path => "provision.sh", env: {
-    "MYSQL_PASSWORD" => "pass@word1",
-    "SERVER_NAME" => "phabricator.apptimists.com",
-    "SERVER_ALIAS" => "cdn.apptimists.com",
-    "SERVER_ADMIN" => "phabricator@apptimists.com",
-    "MAIL_ADDRESS" => "phabricator@apptimists.com",
-    "MAIL_DOMAIN" => "apptimists.com",
-    "MAIL_REPLY_PREFIX" => "phabricator",
-    "MAIL_REPLY_DOMAIN" => "apptimists.com",
-    "SMTP_HOST" => "mail.apptimists.com",
-    "SMTP_USER" => "phabricator",
-    "SMTP_PASSWORD" => "pass@word1",
-    "POP3_HOST" => "mail.apptimists.com",
-    "POP3_USER" => "phabricator",
-    "POP3_PASSWORD" => "pass@word1"
-  }
+  config.vm.provision :shell, :path => "provision.sh", args: [
+    "pass@word1", # MySQL password
+    "phabricator.example.org", # Server name
+    "cdn.example.org", # Server alias
+    "phabricator@example.org", # Server admin
+    "phabricator@example.org", # Mail address
+    "example.org", # Mail domain
+    "phabricator", # Mail reply prefix
+    "example.org", # Mail reply domain
+    "mail.example.org", # SMTP host
+    "phabricator", # SMTP user
+    "pass@word1", # SMTP password
+    "mail.example.org", # POP3 settings
+    "phabricator", # POP3 user
+    "pass@word1" # POP3 password
+  ]
+
+  config.vm.provision :shell, inline: "sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
 end
