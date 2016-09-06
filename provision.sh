@@ -117,6 +117,14 @@ service apache2 restart
 sed -i '/\[mysqld\]/a\#\n# * Phabricator settings\n#\ninnodb_buffer_pool_size=1600M\nsql_mode=STRICT_ALL_TABLES\nft_stopword_file=/home/phd/phabricator/resources/sql/stopwords.txt\nft_boolean_syntax='\'' |-><()~*:""&^'\''\nft_min_word_len=3' /etc/mysql/my.cnf
 sed -i 's/^\(max_allowed_packet\s*=\s*\).*$/\132M/' /etc/mysql/my.cnf
 
+echo '[client]
+user = root
+password = '$MYSQL_PASSWORD'
+
+[mysqladmin]
+user = root
+password = '$MYSQL_PASSWORD > /home/vagrant/.my.cnf
+
 service mysql restart
 
 ## Install databases

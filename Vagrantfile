@@ -23,7 +23,7 @@ Vagrant.configure(2) do |config|
   config.vm.network :private_network, ip: "192.168.50.12"
 
   # Provisioning
-  config.vm.provision :shell, :path => "provision.sh", args: [
+  config.vm.provision "provision", type: "shell", :path => "provision.sh", args: [
     "pass@word1", # MySQL password
     "phabricator.example.org", # Server name
     "cdn.example.org", # Server alias
@@ -40,5 +40,5 @@ Vagrant.configure(2) do |config|
     "pass@word1" # POP3 password
   ]
 
-  config.vm.provision :shell, inline: "sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
+  config.vm.provision "no-tty-fix", type: "shell", inline: "sed -i '/tty/!s/mesg n/tty -s \\&\\& mesg n/' /root/.profile"
 end
