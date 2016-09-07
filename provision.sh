@@ -20,6 +20,13 @@ POP3_PASSWORD=${14}
 apt-get -y -q update
 apt-get -y -q upgrade
 
+# Nice colors
+echo '[[ -s "$HOME/.profile" ]] && source "$HOME/.profile" # Load the default .profile
+export PS1="\[\033[36m\]\u\[\033[m\]@\[\033[32m\]\h:\[\033[33;1m\]\w\[\033[m\]\$ "
+export CLICOLOR=1
+export LSCOLORS=ExFxBxDxCxegedabagacad
+alias ls="ls -GFh"' > ~/.bash_profile
+
 ## Set users
 adduser phabricator --gecos "" --disabled-password --quiet
 adduser phabricator sudo --quiet
