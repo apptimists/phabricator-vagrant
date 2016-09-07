@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Arguments
 MYSQL_PASSWORD=${1}
