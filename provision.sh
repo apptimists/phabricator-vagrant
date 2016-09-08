@@ -114,6 +114,12 @@ sed -i 's/^\(;\)\(date\.timezone\s*=\).*$/\2 \"Europe\/Berlin\"/' /etc/php5/apac
 sed -i 's/^\(post_max_size\s*=\).*$/\1 32M/' /etc/php5/apache2/php.ini
 sed -i 's/^\(;\)\(opcache\.validate_timestamps\s*=\).*$/\20/' /etc/php5/apache2/php.ini
 
+## Enable Opcache
+sed -i 's/^\(;\)\(opcache\.enable\s*=\).*$/\21/' /etc/php5/apache2/php.ini
+sed -i 's/^\(;\)\(opcache\.enable_cli\s*=\).*$/\21/' /etc/php5/apache2/php.ini
+sed -i 's/^\(;\)\(opcache\.memory_consumption\s*=\).*$/\2128/' /etc/php5/apache2/php.ini
+sed -i 's/^\(;\)\(opcache\.max_accelerated_files\s*=\).*$/\22000/' /etc/php5/apache2/php.ini
+
 # Clean up virtual hosts
 rm /etc/apache2/sites-available/000-default.conf
 rm /etc/apache2/sites-available/default-ssl.conf
