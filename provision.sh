@@ -113,6 +113,7 @@ a2ensite phabricator
 sed -i 's/^\(;\)\(date\.timezone\s*=\).*$/\2 \"Europe\/Berlin\"/' /etc/php5/apache2/php.ini
 sed -i 's/^\(post_max_size\s*=\).*$/\1 32M/' /etc/php5/apache2/php.ini
 sed -i 's/^\(;\)\(opcache\.validate_timestamps\s*=\).*$/\20/' /etc/php5/apache2/php.ini
+sed -i 's/^\(;\)\(always_populate_raw_post_data\s*=\).*$/\2 \"-1\"/' /etc/php5/apache2/php.ini
 
 ## Enable Opcache
 sed -i 's/^\(;\)\(opcache\.enable\s*=\).*$/\21/' /etc/php5/apache2/php.ini
