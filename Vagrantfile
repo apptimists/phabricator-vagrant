@@ -18,6 +18,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.hostname = "phabricator.example.org"
   config.hostsupdater.aliases = ["cdn.example.org"]
+  # Hostnames
 
   # Private Network
   config.vm.network :private_network, ip: "192.168.50.12"
