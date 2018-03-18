@@ -47,7 +47,7 @@ cd /opt
 ### Supresses password prompt
 echo mysql-server-5.5 mysql-server/root_password password $MYSQL_PASSWORD | debconf-set-selections
 echo mysql-server-5.5 mysql-server/root_password_again password $MYSQL_PASSWORD | debconf-set-selections
-apt-get -y -q install git mysql-server apache2 dpkg-dev php5 php5-mysql php5-gd php5-dev php5-curl php-apc php5-cli php5-json
+apt-get -y -q install git mysql-server apache2 dpkg-dev php5 php5-mysql php5-gd php5-dev php5-curl php-apc php5-cli php5-json php5-mysqlnd
 
 ### Clone repositories
 git clone https://github.com/phacility/libphutil.git

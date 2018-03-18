@@ -18,7 +18,7 @@ $ echo mysql-server-5.5 mysql-server/root_password password pass@word1 | debconf
 $ echo mysql-server-5.5 mysql-server/root_password_again password pass@word1 | debconf-set-selections
 ```
 ```
-$ apt-get -y install git mysql-server apache2 dpkg-dev php5 php5-mysql php5-gd php5-dev php5-curl php-apc php5-cli php5-json
+$ apt-get -y install git mysql-server apache2 dpkg-dev php5 php5-mysql php5-gd php5-dev php5-curl php-apc php5-cli php5-json php5-mysqlnd
 ```
 ### Set users
 ```
